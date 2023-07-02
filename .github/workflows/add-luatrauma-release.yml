@@ -1,0 +1,149 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Add Luatrauma release
+concurrency: update-luatrauma-releases
+
+on:
+  workflow_dispatch:
+    inputs:
+      distinct_id:
+        type: string
+        description: |
+          A unique identifier that allows the "return-dispatch" action to differentiate runs
+      channel:
+        type: choice
+        description: |
+          The channel to publish the release to
+        options: ["main", "testing"]
+        required: true
+      version:
+        type: string
+        description: |
+          The version of this release (semver 2.0)
+        required: true
+      source:
+        type: string
+        description: |
+          The URL of the source used to build this release
+        required: true
+      displayName:
+        type: string
+        description: |
+          A user-friendly name used to represent this release
+        required: true
+      steamBuildId:
+        type: string
+        description: |
+          The Steam build id associated with this release
+        required: true
+      artifacts:
+        type: string
+        description: |
+          A JSON-encoded array of {target, side, downloadUrl, signatureUrl}
+        required: true
+
+env:
+  GIT_USER_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+  GIT_USER_NAME: "github-actions[bot]"
+  RELEASE_CHANNEL: ${{ inputs.channel }}
+  RELEASE_VERSION: ${{ inputs.version }}
+  RELEASE_SOURCE: ${{ inputs.source }}
+  RELEASE_DISPLAY_NAME: ${{ inputs.displayName }}
+  RELEASE_STEAM_BUILD_ID: ${{ inputs.steamBuildId }}
+  RELEASE_ARTIFACTS: ${{ inputs.artifacts }}
+
+jobs:
+  add-luatrauma-release:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.create-commit.outputs.sha }}
+    steps:
+      - name: "Unique workflow id: ${{ inputs.distinct_id }}"
+        if: ${{ inputs.distinct_id != '' }}
+        run: |
+          :
+
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup Yarn
+        run: |
+          set -Eeuo pipefail
+          corepack enable
+          corepack prepare yarn@stable --activate
+          yarn config set --home enableTelemetry 0
+          yarn install
+
+      - name: Add Luatrauma release
+        run: |
+          set -Eeuo pipefail
+
+          REQUIRED_PROPERTIES=(
+            RELEASE_CHANNEL
+            RELEASE_VERSION
+            RELEASE_SOURCE
+            RELEASE_DISPLAY_NAME
+            RELEASE_STEAM_BUILD_ID
+            RELEASE_ARTIFACTS
+          )
+
+          for prop in "${REQUIRED_PROPERTIES[@]}"; do
+            if [[ -z "$prop" ]]; then
+              echo "Missing property from payload: $prop"
+              exit 1
+            fi
+          done
+
+          yarn luatrauma-releases \
+            create \
+            "$RELEASE_CHANNEL" \
+            "$RELEASE_VERSION" \
+            --steam-build-id "$RELEASE_STEAM_BUILD_ID" \
+            --display-name "$RELEASE_DISPLAY_NAME"
+
+          while read -r artifact; do
+            target="$(jq -er '.target' <<< "$artifact")"
+            side="$(jq -er '.side' <<< "$artifact")"
+            download_url="$(jq -er '.downloadUrl' <<< "$artifact")"
+            signature_url="$(jq -er '.signatureUrl' <<< "$artifact")"
+            yarn luatrauma-releases \
+              add-artifact \
+              "$RELEASE_CHANNEL" \
+              "$RELEASE_VERSION" \
+              "$side" \
+              "$target" \
+              --source "$RELEASE_SOURCE" \
+              --download-url "$download_url" \
+              --signature-url "$signature_url"
+          done <<< "$(jq -ec '.[]' <<< "$RELEASE_ARTIFACTS")"
+
+          yarn luatrauma-releases \
+            publish \
+            "$RELEASE_CHANNEL" \
+            "$RELEASE_VERSION" \
+
+      - name: Create commit
+        id: create-commit
+        run: |
+          set -Eeuo pipefail
+          git config user.name "$GIT_USER_NAME"
+          git config user.email "$GIT_USER_EMAIL"
+          git commit -am "Add Luatrauma release (${RELEASE_CHANNEL}): $RELEASE_VERSION"
+          echo "sha=$(git rev-parse --verify HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Push
+        run: git push
+
+  deploy:
+    needs: [add-luatrauma-release]
+    secrets: inherit
+    uses: ./.github/workflows/deploy.yml
+    with:
+      target: ${{ needs.add-luatrauma-release.outputs.sha }}

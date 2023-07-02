@@ -1,0 +1,12 @@
+{
+  "channels": {
+    "main": {
+      "displayName": "Stable",
+      "releases": {}
+    },
+    "testing": {
+      "displayName": "Testing",
+      "releases": {}
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "mounts": [
+    "source=.devcontainer/.config,target=/home/vscode/.config,type=bind,consistency=cached"
+  ],
+  "runArgs": [
+    "--userns=keep-id"
+  ],
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  "onCreateCommand": "zsh ./.devcontainer/setup.zsh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "arcanis.vscode-zipfs",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml",
+        "eamodio.gitlens"
+      ]
+    }
+  }
+}

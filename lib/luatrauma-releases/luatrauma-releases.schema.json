@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "additionalProperties": true,
+  "title": "Luatrauma Releases",
+  "type": "object",
+  "required": ["channels"],
+  "properties": {
+    "channels": {
+      "$ref": "#/definitions/channels"
+    }
+  },
+  "definitions": {
+    "channels": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/channel"
+      }
+    },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["displayName", "releases"],
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "releases": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/release"
+          }
+        }
+      }
+    },
+    "dotnet-rid": {
+      "type": "string",
+      "enum": ["win-x64", "linux-x64", "osx-x64"],
+      "tsEnumNames": ["Windows64", "Linux64", "Mac64"]
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifacts", "published"],
+      "properties": {
+        "published": {
+          "type": "boolean"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/release-artifact"
+          }
+        }
+      }
+    },
+    "release-artifact": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/release-artifact-dotnet-publish-gzipped-tarball"
+        }
+      ]
+    },
+    "release-artifact-type": {
+      "type": "string",
+      "enum": [
+        "61cfe85c-a7e6-4f8f-8bc7-ad47821afc7d",
+        "f57e80f6-8455-4f14-88e1-3cfd629faaa5"
+      ],
+      "tsEnumNames": ["ClientBuildGzippedTarball", "ServerBuildGzippedTarball"]
+    },
+    "release-artifact-dotnet-publish-gzipped-tarball": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "target", "downloadUrl", "signatureUrl"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "oneOf": [
+            { "const": "61cfe85c-a7e6-4f8f-8bc7-ad47821afc7d" },
+            { "const": "f57e80f6-8455-4f14-88e1-3cfd629faaa5" }
+          ]
+        },
+        "target": {
+          "$ref": "#/definitions/dotnet-rid"
+        },
+        "source": {
+          "type": "string",
+          "$comment": "FIXME: URI != URL, but there's nothing for that in the JSON Schema spec",
+          "format": "uri"
+        },
+        "downloadUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "\\.tar\\.gz$"
+        },
+        "signatureUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "\\.sig$"
+        }
+      }
+    }
+  }
+}

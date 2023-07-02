@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Deploy
+concurrency: deploy
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        with:
+          ref: ${{ inputs.target || github.sha }}
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup Yarn
+        run: |
+          set -Eeuo pipefail
+          corepack enable
+          corepack prepare yarn@stable --activate
+          yarn config set --home enableTelemetry 0
+          yarn install
+
+      - name: Build
+        run: |
+          set -Eeuo pipefail
+          yarn build
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca # v1.5.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 9a38bce21aaf9143d8c861abf4da92d2
+          projectName: luatrauma-releases
+          directory: public
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          workingDirectory: dist
+          wranglerVersion: 3

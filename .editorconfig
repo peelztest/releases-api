@@ -1,0 +1,15 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[*.{json,yml,toml}]
+indent_style = space
+indent_size = 2
+
+[*.{js,cjs,mjs,jsx,ts,tsx,mdx}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
