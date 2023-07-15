@@ -160,6 +160,57 @@
               "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-d36f676dbcd229a1dc2fe873377f2c5840cc9a35/luatrauma_mac_client.tar.gz.sig"
             }
           ]
+        },
+        "0.0.0-build1689387013": {
+          "published": true,
+          "displayName": "0128368",
+          "metadata": {
+            "steamBuildId": "11524389"
+          },
+          "artifacts": [
+            {
+              "type": "f57e80f6-8455-4f14-88e1-3cfd629faaa5",
+              "target": "win-x64",
+              "source": "git+https://github.com/peelztest/LuaCsForBarotrauma.git#commit=0128368eb09d1783ec1071b5643b996636cab544",
+              "downloadUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_windows_server.tar.gz",
+              "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_windows_server.tar.gz.sig"
+            },
+            {
+              "type": "61cfe85c-a7e6-4f8f-8bc7-ad47821afc7d",
+              "target": "win-x64",
+              "source": "git+https://github.com/peelztest/LuaCsForBarotrauma.git#commit=0128368eb09d1783ec1071b5643b996636cab544",
+              "downloadUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_windows_client.tar.gz",
+              "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_windows_client.tar.gz.sig"
+            },
+            {
+              "type": "f57e80f6-8455-4f14-88e1-3cfd629faaa5",
+              "target": "linux-x64",
+              "source": "git+https://github.com/peelztest/LuaCsForBarotrauma.git#commit=0128368eb09d1783ec1071b5643b996636cab544",
+              "downloadUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_linux_server.tar.gz",
+              "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_linux_server.tar.gz.sig"
+            },
+            {
+              "type": "61cfe85c-a7e6-4f8f-8bc7-ad47821afc7d",
+              "target": "linux-x64",
+              "source": "git+https://github.com/peelztest/LuaCsForBarotrauma.git#commit=0128368eb09d1783ec1071b5643b996636cab544",
+              "downloadUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_linux_client.tar.gz",
+              "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_linux_client.tar.gz.sig"
+            },
+            {
+              "type": "f57e80f6-8455-4f14-88e1-3cfd629faaa5",
+              "target": "osx-x64",
+              "source": "git+https://github.com/peelztest/LuaCsForBarotrauma.git#commit=0128368eb09d1783ec1071b5643b996636cab544",
+              "downloadUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_mac_server.tar.gz",
+              "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_mac_server.tar.gz.sig"
+            },
+            {
+              "type": "61cfe85c-a7e6-4f8f-8bc7-ad47821afc7d",
+              "target": "osx-x64",
+              "source": "git+https://github.com/peelztest/LuaCsForBarotrauma.git#commit=0128368eb09d1783ec1071b5643b996636cab544",
+              "downloadUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_mac_client.tar.gz",
+              "signatureUrl": "https://github.com/peelztest/LuaCsForBarotrauma/releases/download/build-develop-0128368eb09d1783ec1071b5643b996636cab544/luatrauma_mac_client.tar.gz.sig"
+            }
+          ]
         }
       }
     }
